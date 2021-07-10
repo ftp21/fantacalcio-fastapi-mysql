@@ -17,6 +17,7 @@ orjson = "*"
 aiofiles = "*"
 requests = "*"
 python-dotenv = "*"
+sqlalchemy-utils = "*"
 
 [dev-packages]
 
