@@ -4,6 +4,7 @@ from dotenv import dotenv_values
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 
 from app.database import Base
 from app.database.listone.model import Listone
