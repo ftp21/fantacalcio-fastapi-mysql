@@ -40,4 +40,4 @@ COPY . .
 # Run the application
 
 ENTRYPOINT ["python"]
-CMD [ "run.py"]
+CMD [ "cli.py"]

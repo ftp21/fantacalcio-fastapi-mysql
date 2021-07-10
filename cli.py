@@ -67,6 +67,8 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
 @app.command()
 def create_db():
     engine = create_engine(config['CONNECTION_STRING'], echo=True)
+    if not database_exists(engine.url):
+        create_database(engine.url)
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
