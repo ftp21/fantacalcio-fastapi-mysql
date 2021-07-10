@@ -82,7 +82,7 @@ def flush_campioncini():
 
 @app.command('run')
 def start_fastapi():
-    uvicorn.run("app:app", host='127.0.0.1', port=5555, reload=True, debug=True, workers=5)
+    uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
 
 if __name__ == "__main__":
     app()
