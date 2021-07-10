@@ -39,5 +39,5 @@ COPY . .
 
 # Run the application
 
-ENTRYPOINT ["uvicorn", "--reload","--host", "0.0.0.0"]
-CMD [ "app:app"]
+ENTRYPOINT ["python"]
+CMD [ "run.py"]
