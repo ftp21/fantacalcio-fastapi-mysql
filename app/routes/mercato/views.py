@@ -14,7 +14,7 @@ def acquista_giocatore(
         id_giocatore: int,
         crediti: int = Form(...),
         id_squadra: int = Form(...)
-    ):
+    ) :
     config = get_config()
     message = ""
     message = can_i_buy(id_squadra, crediti, id_giocatore)
@@ -66,6 +66,7 @@ def acquista_giocatore(
         )
         db.session.add(acquisto)
         db.session.commit()
+
         return id_giocatore
     raise HTTPException(400,detail=message)
 
