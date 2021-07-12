@@ -18,6 +18,15 @@ aiofiles = "*"
 requests = "*"
 python-dotenv = "*"
 sqlalchemy-utils = "*"
+websockets = "*"
+fastapi-websocket-pubsub = "*"
+pydispatch = "*"
+python-dispatch = "*"
+fastapi-plugins = "*"
+sse-starlette = "*"
+aioredis = "*"
+fastapi-socketio = "*"
+http3 = "*"
 
 [dev-packages]
 

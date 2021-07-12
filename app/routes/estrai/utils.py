@@ -4,7 +4,7 @@ from sqlalchemy import and_,text,desc
 
 from .schemas.estratto import Estratto
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
-
+from fastapi import BackgroundTasks
 
 def get_avanti() -> Estratto:
     me = Estratto()
@@ -17,6 +17,7 @@ def get_avanti() -> Estratto:
         estratto.estratto = 1
         estratto.data_estrazione = text("now()")
         db.session.commit()
+        
         return Estratto(
             id=estratto.giocatore.id,
             nome_giocatore=estratto.giocatore.nome_giocatore,
@@ -40,6 +41,7 @@ def get_indietro() -> Estratto:
             estratto[0].estratto = None
             estratto[0].data_estrazione= None
             db.session.commit()
+            
             return Estratto(
                 id=estratto[1].giocatore.id,
                 nome_giocatore=estratto[1].giocatore.nome_giocatore,
@@ -51,6 +53,7 @@ def get_indietro() -> Estratto:
 
 
         elif len(estratto) == 1:
+            
             return Estratto(
                 id=estratto[0].giocatore.id,
                 nome_giocatore=estratto[0].giocatore.nome_giocatore,
@@ -59,5 +62,5 @@ def get_indietro() -> Estratto:
                 campioncino=estratto[0].giocatore.campioncino,
                 ordine=estratto[0].ordine
             )
-
+    
     return Estratto()

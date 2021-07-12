@@ -20,3 +20,5 @@ router.include_router(Rosa)
 router.include_router(Mercato,prefix='/mercato')
 router.include_router(Svincolati)
 router.include_router(Status)
+
+

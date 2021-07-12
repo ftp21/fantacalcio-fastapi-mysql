@@ -79,6 +79,11 @@ def flush_campioncini():
     for i in glob.glob("./campioncini/*.jpg"):
         os.remove(i)
 
+@app.command()
+def ws():
+    from app.wsocket import ConnectionManager
+    manager=ConnectionManager()
+    manager.broadcast('test')
 
 @app.command('run')
 def start_fastapi():

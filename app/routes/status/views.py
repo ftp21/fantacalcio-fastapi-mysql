@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Form
+from fastapi import APIRouter,Depends,Request,BackgroundTasks
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 from app.routes.mescola.utils import revese_mescola
 from app.database.mescola.model import Mescola
@@ -7,12 +7,11 @@ from app.database.listone.model import Listone
 from app.database.squadre.model import Squadre
 from app.routes.estrai.schemas.estratto import Estratto
 from .schemas.status import Status as StatusSchema,Info
+from app.tasks.push_update import push_update
 router = APIRouter(tags=["Get status attuale"])
-import logging
-
 
 @router.get('/status')
-def get_status() -> StatusSchema:
+async def get_status(request: Request,background_tasks: BackgroundTasks) -> StatusSchema:
     mescola=revese_mescola()
     ultimo_acquisto=db.session.query(Squadre.nome.label('fanta_squadra'),
                               Listone.nome_giocatore,
@@ -37,6 +36,8 @@ def get_status() -> StatusSchema:
             nome_giocatore="Inizia ad estrarre"
         )
 
+    background_tasks.add_task(push_update)
+    # requests.get(trigger)
     return StatusSchema(
         mescola=mescola,
         ultimo_acquisto=ultimo_acquisto,
