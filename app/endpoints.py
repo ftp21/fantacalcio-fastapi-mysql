@@ -8,7 +8,7 @@ from app.routes.rose.views import router as Rosa
 from app.routes.mercato.views import router as Mercato
 from app.routes.svincolati.views import router as Svincolati
 from app.routes.status.views import router as Status
-
+from app.routes.export import router as Export
 
 router = APIRouter(prefix='/api/v1')
 router.include_router(Listone)
@@ -20,5 +20,4 @@ router.include_router(Rosa)
 router.include_router(Mercato,prefix='/mercato')
 router.include_router(Svincolati)
 router.include_router(Status)
-
-
+router.include_router(Export)

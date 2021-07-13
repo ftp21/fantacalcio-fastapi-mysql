@@ -64,7 +64,7 @@ class ConnectionManager:
             try:
                 await connection.send_text(message)
             except:
-                print(connection)
+                pass
 
 
 '''
