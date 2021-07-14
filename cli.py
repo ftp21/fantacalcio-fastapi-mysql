@@ -10,12 +10,13 @@ from app.database import Base
 from app.database.listone.model import Listone
 
 app = typer.Typer()
-config = dotenv_values()
+import os
+load_dotenv()
 
 @app.command()
 def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Scarica i campioncini in locale")):
     link_lista_campioncini = 'https://www.fantacalcio.it/servizi/lista.ashx'
-    engine = create_engine(config['CONNECTION_STRING'], echo=False)
+    engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     session = Session()
     if download_campioncini != 0:
@@ -67,7 +68,7 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
 
 @app.command()
 def create_db():
-    engine = create_engine(config['CONNECTION_STRING'], echo=True)
+    engine = create_engine(os.environ['CONNECTION_STRING'], echo=True)
     if not database_exists(engine.url):
         create_database(engine.url)
     Base.metadata.drop_all(bind=engine)
@@ -78,12 +79,6 @@ def flush_campioncini():
     typer.echo("Cancello i campioncini")
     for i in glob.glob("./campioncini/*.jpg"):
         os.remove(i)
-
-@app.command()
-def ws():
-    from app.wsocket import ConnectionManager
-    manager=ConnectionManager()
-    manager.broadcast('test')
 
 @app.command('run')
 def start_fastapi():
