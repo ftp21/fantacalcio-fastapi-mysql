@@ -1,6 +1,7 @@
 from .schemas.parametri import Parametri
 from app.database.listone.model import Listone
 from app.database.mescola.model import Mescola
+from app.database.acquisti.model import Acquisti
 from app.routes.configurazione.utils import get_config
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 import random
@@ -15,6 +16,8 @@ def parse_and_scramble(parametri: Parametri):
         clausole.append('C')
     if parametri.attaccanti:
         clausole.append('A')
+
+    acquistati=db.session.query(Acquisti.id_giocatore).all()
 
 
     config_generale=get_config()
@@ -31,10 +34,10 @@ def parse_and_scramble(parametri: Parametri):
             random.shuffle(portieri_raggruppati)
         clausole.remove('P')
     if parametri.alfabetico:
-        giocatori = db.session.query(Listone).filter(Listone.ruolo.in_(clausole)).order_by(
+        giocatori = db.session.query(Listone).filter(Listone.ruolo.in_(clausole),~Listone.id.in_(acquistati)).order_by(
             Listone.nome_giocatore).all()
     else:
-        giocatori = db.session.query(Listone).filter(Listone.ruolo.in_(clausole)).all()
+        giocatori = db.session.query(Listone).filter(Listone.ruolo.in_(clausole),~Listone.id.in_(acquistati)).all()
     if len(portieri_raggruppati) > 0:
         if parametri.alfabetico == False:
             random.shuffle(giocatori)

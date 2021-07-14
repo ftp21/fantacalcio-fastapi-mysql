@@ -1,7 +1,7 @@
 from fastapi import FastAPI,WebSocket
 from dotenv import dotenv_values,load_dotenv
 from app.tasks.push_update import push_update
-
+import os
 load_dotenv()
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +12,6 @@ from fastapi.staticfiles import StaticFiles
 
 
 def get_application() -> FastAPI:
-    config = dotenv_values()
     app = FastAPI(
         title="Fantacalcio Backend",
 
@@ -30,7 +29,7 @@ def get_application() -> FastAPI:
 
 
 
-    app.add_middleware(DBSessionMiddleware, db_url=config['CONNECTION_STRING'])
+    app.add_middleware(DBSessionMiddleware, db_url=os.environ['CONNECTION_STRING'])
     app.include_router(Routes)
     app.mount("/stemmi", StaticFiles(directory="stemmi"), name="stemmi")
     app.mount("/campioncini", StaticFiles(directory="campioncini"), name="campioncini")
@@ -55,9 +54,6 @@ class ConnectionManager:
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
-
-    # async def send_personal_message(self, message: str, websocket: WebSocket):
-    #     await websocket.send_text(message)
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
