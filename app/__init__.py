@@ -1,4 +1,4 @@
-from fastapi import FastAPI,WebSocket,WebSocketDisconnect
+from fastapi import FastAPI,WebSocket,WebSocketDisconnect,BackgroundTasks
 from dotenv import dotenv_values,load_dotenv
 from app.tasks.push_update import push_update
 import os
@@ -43,7 +43,7 @@ def get_application() -> FastAPI:
 
 
 app=get_application()
-
+task=BackgroundTasks
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
@@ -51,7 +51,8 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-        push_update()
+
+        task.add_task(push_update)
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
