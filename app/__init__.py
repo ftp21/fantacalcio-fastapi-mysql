@@ -1,4 +1,4 @@
-from fastapi import FastAPI,WebSocket
+from fastapi import FastAPI,WebSocket,WebSocketDisconnect
 from dotenv import dotenv_values,load_dotenv
 from app.tasks.push_update import push_update
 import os
@@ -51,6 +51,7 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
+        push_update()
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)

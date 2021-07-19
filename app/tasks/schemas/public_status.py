@@ -1,6 +1,7 @@
 from pydantic import BaseModel,validator,root_validator
 from app.routes.configurazione.utils import get_config
 from typing import List,Dict,Optional
+import os
 from app.routes.mescola.schemas.parametri import Parametri
 from app.routes.rose.schemas.giocatore import GiocatoreAcquistato
 from app.routes.estrai.schemas.estratto import Estratto
