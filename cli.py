@@ -110,6 +110,7 @@ def start_fastapi():
             ready=1
         except (SQLAlchemyError, DBAPIError) as e:
             print('Mysql not ready...Wait')
+            time.sleep(2)
 
 
 
