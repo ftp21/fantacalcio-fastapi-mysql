@@ -1,7 +1,7 @@
 import app
 from app.routes.squadre.views import get_squadre
-from fastapi import Request
 from app.routes.rose.utils import get_rosa
+from fastapi import APIRouter
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 from app.database.mescola.model import Mescola
 
@@ -9,7 +9,9 @@ from app.database.acquisti.model import Acquisti
 from app.database.listone.model import Listone
 from app.database.squadre.model import Squadre
 from .schemas.public_status import Public_state,Info,Rose_public
+router=APIRouter()
 
+@router.get('/public',response_model=str)
 async def push_update():
     squadre=get_squadre()
     public=[]
@@ -45,7 +47,6 @@ async def push_update():
     estratti = db.session.query(Mescola).filter(Mescola.estratto == 1).count()
     totali = db.session.query(Mescola).count()
     rimanenti = int(totali) - int(estratti)
-
 
 
 

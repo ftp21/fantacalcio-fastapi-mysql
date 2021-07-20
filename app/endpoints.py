@@ -21,3 +21,7 @@ router.include_router(Mercato,prefix='/mercato')
 router.include_router(Svincolati)
 router.include_router(Status)
 router.include_router(Export)
+
+
+from app.tasks.push_update import router as Task
+router.include_router(Task)

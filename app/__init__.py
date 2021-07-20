@@ -43,16 +43,16 @@ def get_application() -> FastAPI:
 
 
 app=get_application()
-task=BackgroundTasks
+
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
 
+
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         self.active_connections.append(websocket)
-
-        task.add_task(push_update)
 
     def disconnect(self, websocket: WebSocket):
         self.active_connections.remove(websocket)
@@ -74,7 +74,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
-            data = await websocket.receive_json()
+            data = await websocket.receive_text()
 
     except WebSocketDisconnect:
         manager.disconnect(websocket)

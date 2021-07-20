@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy import func
+
 
 from app.database import Base
 from app.database.listone.model import Listone
@@ -82,6 +84,14 @@ def flush_campioncini():
 
 @app.command('run')
 def start_fastapi():
+    engine = create_engine(os.environ['CONNECTION_STRING'], echo=True)
+    if not database_exists(engine.url):
+        create_db()
+
+    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = Session()
+    if session.query(func.count(Listone.id)).scalar()==0:
+        import_listone(download_campioncini=0)
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
 
 if __name__ == "__main__":
