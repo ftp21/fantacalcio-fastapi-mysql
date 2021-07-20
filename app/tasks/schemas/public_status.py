@@ -27,8 +27,7 @@ class Estratto_public(BaseModel):
                 values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
 
             else:
-                # values['campioncino'] = '/stemmi/scudetto.png'
-                values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
+                values['campioncino'] = '/stemmi/scudetto.png'
             values['squadra'] = ""
         else:
             values['campioncino'] = value
