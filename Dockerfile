@@ -40,7 +40,7 @@ USER fastapi
 # Install application into container
 COPY . .
 USER root
-RUN chown fastapi:fastapi stemmi campioncini backup
+RUN chown fastapi:fastapi stemmi campioncini backup tmp
 
 # Run the application
 USER fastapi

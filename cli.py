@@ -22,7 +22,7 @@ def import_stemmi():
     url = "https://www.legaseriea.it/it"
     download = requests.get(url)
     decoded_content = download.content.decode('utf-8')
-    soup = BeautifulSoup(decoded_content)
+    soup = BeautifulSoup(decoded_content,features="html.parser")
     for img in soup.find('header').findAll('img', {'height': "48"}):
         squadra=img.get('title').capitalize()+".png"
         img_url="https://www.legaseriea.it"+img.get('src')
