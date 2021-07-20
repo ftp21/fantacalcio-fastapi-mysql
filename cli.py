@@ -1,9 +1,12 @@
+import time
+
 import typer,requests,csv,os,glob,uvicorn
 from typing import Optional
 from dotenv import load_dotenv
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import func
 from bs4 import BeautifulSoup
@@ -100,7 +103,16 @@ def flush_campioncini():
 
 @app.command('run')
 def start_fastapi():
-    engine = create_engine(os.environ['CONNECTION_STRING'], echo=True)
+    ready=0
+    while ready==0:
+        try:
+            engine = create_engine(os.environ['CONNECTION_STRING'], echo=True)
+            ready=1
+        except OperationalError:
+            print("Mysql not ready...")
+            time.sleep(2)
+
+
     if not database_exists(engine.url):
         create_db()
 
