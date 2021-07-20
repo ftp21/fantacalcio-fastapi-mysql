@@ -113,7 +113,7 @@ class Rose_public(BaseModel):
             return crediti_spesi
 
 class Public_state(BaseModel):
-    estratto: Estratto_public
-    ultimo_acquisto: Acquisto_public
-    rose: Optional[List[Rose_public]]
-    info: Info
+    estratto: Estratto_public or ""
+    ultimo_acquisto: Acquisto_public or ""
+    rose: Optional[List[Rose_public]] or ""
+    info: Info or ""

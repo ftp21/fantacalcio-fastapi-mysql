@@ -111,13 +111,11 @@ def start_fastapi():
         import_listone(download_campioncini=0)
     session.close()
 
-    if os.path.exists('import.yaml'):
-        typer.echo("Importo le impostazioni dell'asta")
-        import_settings()
 
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
 @app.command('import-settings')
 def import_settings():
+    typer.echo("Importo le impostazioni dell'asta")
     import yaml
     engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
