@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import func
-
+from bs4 import BeautifulSoup
 
 from app.database import Base
 from app.database.listone.model import Listone
@@ -14,6 +14,22 @@ from app.database.listone.model import Listone
 app = typer.Typer()
 import os
 load_dotenv()
+@app.command()
+def import_stemmi():
+    url = "https://www.legaseriea.it/it"
+    download = requests.get(url)
+    decoded_content = download.content.decode('utf-8')
+    soup = BeautifulSoup(decoded_content)
+    for img in soup.find('header').findAll('img', {'height': "48"}):
+        squadra=img.get('title').capitalize()+".png"
+        img_url="https://www.legaseriea.it"+img.get('src')
+        output = 'stemmi/' + squadra
+        if not os.path.exists(output):
+            r = requests.get(img_url, allow_redirects=True)
+            open(output, 'wb').write(r.content)
+            print("Download {}".format(squadra))
+
+
 
 @app.command()
 def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Scarica i campioncini in locale")):

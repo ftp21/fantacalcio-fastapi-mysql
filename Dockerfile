@@ -1,4 +1,3 @@
-
 FROM python:3.9-slim as base
 
 # Setup env
@@ -26,7 +25,11 @@ FROM base AS runtime
 
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
-COPY --from=python-deps /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+RUN apt-get update \
+        && apt-get install -y --no-install-recommends default-libmysqlclient-dev  \
+        && apt-get clean \
+        && apt-get autoremove -y
+
 ENV PATH="/.venv/bin:$PATH"
 
 # Create and switch to a new user
