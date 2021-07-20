@@ -103,17 +103,7 @@ def flush_campioncini():
 
 @app.command('run')
 def start_fastapi():
-    ready=0
-    while ready==0:
-        try:
-            engine = create_engine(os.environ['CONNECTION_STRING'], echo=False).connect()
-            ready=1
-        except (SQLAlchemyError, DBAPIError) as e:
-            print('Mysql not ready...Wait')
-            time.sleep(2)
-
-
-
+    engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
     if not database_exists(engine.url):
         create_db()
 
@@ -121,6 +111,7 @@ def start_fastapi():
     session = Session()
     if session.query(func.count(Listone.id)).scalar()==0:
         import_listone(download_campioncini=0)
+    session.close()
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
 
 if __name__ == "__main__":
