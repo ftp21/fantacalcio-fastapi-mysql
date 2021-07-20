@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError,SQLAlchemyError,DBAPIError
 from sqlalchemy_utils import database_exists, create_database
 from sqlalchemy import func
 from bs4 import BeautifulSoup
@@ -106,11 +106,11 @@ def start_fastapi():
     ready=0
     while ready==0:
         try:
-            engine = create_engine(os.environ['CONNECTION_STRING'], echo=True)
+            engine = create_engine(os.environ['CONNECTION_STRING'], echo=False).connect()
             ready=1
-        except OperationalError:
-            print("Mysql not ready...")
-            time.sleep(2)
+        except (SQLAlchemyError, DBAPIError) as e:
+            print('Mysql not ready...Wait')
+
 
 
     if not database_exists(engine.url):
