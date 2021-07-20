@@ -22,7 +22,8 @@ class Estratto_public(BaseModel):
         config = get_config()
         if config.raggruppa_portieri == 1 and values['ruolo'] == 'Portiere':
             values['nome_giocatore'] = values['squadra']
-            if os.path.exists('../stemmi/' + values['squadra'] + '.png'):
+            values['squadra']=""
+            if os.path.exists('stemmi/' + values['squadra'] + '.png'):
                 values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
             else:
                 values['campioncino'] = '/stemmi/scudetto.png'
