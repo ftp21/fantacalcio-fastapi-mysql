@@ -23,7 +23,7 @@ class Estratto_public(BaseModel):
         if config.raggruppa_portieri == 1 and values['ruolo'] == 'Portiere':
             values['nome_giocatore'] = values['squadra']
 
-            if os.path.exists('/home/fastapi/stemmi/' + values['squadra'] + '.png'):
+            if os.path.exists('stemmi/' + values['squadra'] + '.png'):
                 values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
 
             else:

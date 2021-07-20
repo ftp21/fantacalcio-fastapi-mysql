@@ -22,6 +22,7 @@ fastapi-websocket-pubsub = "*"
 fastapi-plugins = "*"
 fastapi-socketio = "*"
 beautifulsoup4 = "*"
+pyyaml = "*"
 
 [dev-packages]
 

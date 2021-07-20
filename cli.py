@@ -30,7 +30,7 @@ def import_stemmi():
         if not os.path.exists(output):
             r = requests.get(img_url, allow_redirects=True)
             open(output, 'wb').write(r.content)
-            print("Download {}".format(squadra))
+            typer.echo("Download {}".format(squadra))
 
 
 
@@ -63,8 +63,6 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
                 if download_campioncini !=0:
                     campioncino='campioncini/'+os.path.basename(row[15])
                     if not os.path.exists(campioncino):
-                        # print("Download di {}".format(os.path.basename(row[15])))
-                        # typer.echo("Download di {}".format(os.path.basename(row[15])))
                         r = requests.get(row[15], allow_redirects=True)
                         open(campioncino, 'wb').write(r.content)
                         campioncino='/'+campioncino
@@ -112,7 +110,46 @@ def start_fastapi():
     if session.query(func.count(Listone.id)).scalar()==0:
         import_listone(download_campioncini=0)
     session.close()
+
+    if os.path.exists('import.yaml'):
+        typer.echo("Importo le impostazioni dell'asta")
+        import_settings()
+
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
+@app.command('import-settings')
+def import_settings():
+    import yaml
+    engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
+    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = Session()
+
+    with open('import.yaml') as f:
+        impostazioni = yaml.safe_load(f)
+    from app.database.squadre.model import Squadre
+    session.query(Squadre).delete()
+    for squadra in impostazioni['squadre']:
+        session.add(
+            Squadre(
+                nome=squadra
+            )
+        )
+        session.commit()
+
+    from app.database.configurazione.model import Configurazione
+    session.query(Configurazione).delete()
+    me = Configurazione(
+        id=1,
+        portieri=impostazioni['impostazioni']['portieri'],
+        difensori=impostazioni['impostazioni']['difensori'],
+        centrocampisti=impostazioni['impostazioni']['centrocampisti'],
+        attaccanti=impostazioni['impostazioni']['attaccanti'],
+        raggruppa_portieri=impostazioni['impostazioni']['raggruppa_portieri'],
+        crediti_totali=impostazioni['impostazioni']['crediti_totali'],
+        nascondi_crediti=impostazioni['impostazioni']['crediti_nascosti'],
+    )
+    session.add(me)
+    session.commit()
+
 
 if __name__ == "__main__":
     app()
