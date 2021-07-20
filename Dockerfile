@@ -39,8 +39,11 @@ USER fastapi
 
 # Install application into container
 COPY . .
+USER root
+RUN chown fastapi:fastapi stemmi campioncini backup
 
 # Run the application
+USER fastapi
 
 ENTRYPOINT ["python"]
 CMD [ "cli.py","run"]
