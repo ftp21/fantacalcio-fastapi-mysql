@@ -26,7 +26,8 @@ class Estratto_public(BaseModel):
             if os.path.exists('/home/fastapi/stemmi/' + values['squadra'] + '.png'):
                 values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
             else:
-                values['campioncino'] = '/stemmi/scudetto.png'
+                # values['campioncino'] = '/stemmi/scudetto.png'
+                values['campioncino'] = '/stemmi/' + values['squadra'] + '.png'
         else:
             values['campioncino'] = value
         return values['campioncino']
