@@ -9,6 +9,11 @@ from app.database.acquisti.model import Acquisti
 from app.database.listone.model import Listone
 from app.database.squadre.model import Squadre
 from .schemas.public_status import Public_state,Info,Rose_public
+
+
+from app.routes.mescola.schemas.parametri import Parametri
+from app.routes.rose.schemas.giocatore import GiocatoreAcquistato
+from app.routes.estrai.schemas.estratto import Estratto
 router=APIRouter()
 
 @router.get('/public',response_model=str)
@@ -44,6 +49,9 @@ async def push_update():
                                 Listone.campioncino,
                                 Mescola.ordine).join(Listone, Listone.id == Mescola.id_giocatore).where(
         Mescola.estratto != None).order_by(Mescola.ordine.desc()).first()
+
+
+
     estratti = db.session.query(Mescola).filter(Mescola.estratto == 1).count()
     totali = db.session.query(Mescola).count()
     rimanenti = int(totali) - int(estratti)
@@ -60,6 +68,6 @@ async def push_update():
                 totali=totali,
                 rimanenti=rimanenti
             )
-        ).json()
+        ).json(exclude_none=False,exclude_defaults=False,exclude_unset=False)
     )
     return ""
