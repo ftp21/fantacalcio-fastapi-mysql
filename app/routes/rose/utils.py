@@ -20,16 +20,16 @@ def get_rosa(id_squadra) -> Rosa:
 
 
     composizione={
-        'portieri' :0,
+        'portieri' :len(portieri),
         'difensori':len(difensori),
         'centrocampisti': len(centrocampisti),
         'attaccanti': len(attaccanti)
     }
-    if config.raggruppa_portieri == 1:
-        num_portieri = db.session.query(Acquisti).join(Listone, Listone.id == Acquisti.id_giocatore).join(Squadre,Squadre.id == Acquisti.id_squadra).where(Acquisti.id_squadra == id_squadra, Listone.ruolo == 'P').group_by(Listone.squadra).all()
-        composizione['portieri'] = len(num_portieri)
-    else:
-        composizione['portieri']=len(portieri)
+    # if config.raggruppa_portieri == 1:
+    #     num_portieri = db.session.query(Acquisti).join(Listone, Listone.id == Acquisti.id_giocatore).join(Squadre,Squadre.id == Acquisti.id_squadra).where(Acquisti.id_squadra == id_squadra, Listone.ruolo == 'P').group_by(Listone.squadra).all()
+    #     composizione['portieri'] = len(num_portieri)
+    # else:
+    #     composizione['portieri']=len(portieri)
 
 
     return Rosa(
@@ -44,12 +44,27 @@ def get_rosa(id_squadra) -> Rosa:
 
 
 def _get_rosa_ruolo(ruolo,id_squadra):
-    return db.session.query(Squadre.id.label('id_fanta_squadra'),
-                              Squadre.nome.label('fanta_squadra'),
-                              Listone.id.label('id_giocatore'),
-                              Listone.nome_giocatore,
-                              Listone.squadra,
-                              Listone.ruolo,
-                              Listone.campioncino,
-                              Acquisti.crediti,
-                                Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Acquisti.id_squadra==id_squadra,Listone.ruolo==ruolo).all()
+    config = get_config()
+    if config.raggruppa_portieri == 1:
+        return db.session.query(Squadre.id.label('id_fanta_squadra'),
+                                  Squadre.nome.label('fanta_squadra'),
+                                  Listone.id.label('id_giocatore'),
+                                  Listone.nome_giocatore,
+                                  Listone.squadra,
+                                  Listone.ruolo,
+                                  Listone.campioncino,
+                                  Acquisti.crediti,
+                                    Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Acquisti.id_squadra==id_squadra,Listone.ruolo==ruolo).group_by(Listone.squadra).all()
+
+    else:
+
+        return db.session.query(Squadre.id.label('id_fanta_squadra'),
+                                  Squadre.nome.label('fanta_squadra'),
+                                  Listone.id.label('id_giocatore'),
+                                  Listone.nome_giocatore,
+                                  Listone.squadra,
+                                  Listone.ruolo,
+                                  Listone.campioncino,
+                                  Acquisti.crediti,
+                                    Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Acquisti.id_squadra==id_squadra,Listone.ruolo==ruolo).all()
+

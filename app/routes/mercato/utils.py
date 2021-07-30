@@ -1,5 +1,7 @@
 from app.routes.rose.utils import get_rosa
 from app.routes.configurazione.utils import get_config
+from sqlalchemy.orm.exc import NoResultFound
+
 from fastapi_sqlalchemy import db
 from app.database.listone.model import Listone
 from app.database.acquisti.model import Acquisti
@@ -33,9 +35,11 @@ def svincolatore(id_giocatore):
         id_giocatori_squadra = db.session.query(Listone.id).filter(Listone.ruolo == 'P',
                                                                    Listone.squadra == giocatore.squadra).all()
         for id in id_giocatori_squadra:
-            db.session.delete(db.session.query(Acquisti).filter(Acquisti.id_giocatore == int(id.id)).one())
-            db.session.commit()
-
+            try:
+                db.session.delete(db.session.query(Acquisti).filter(Acquisti.id_giocatore == int(id.id)).one())
+                db.session.commit()
+            except NoResultFound:
+                pass
         return id_giocatore
 
     if giocatore_acquisti != None:
