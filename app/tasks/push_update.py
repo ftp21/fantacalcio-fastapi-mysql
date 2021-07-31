@@ -4,6 +4,7 @@ from app.routes.rose.utils import get_rosa
 from fastapi import APIRouter
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 from app.database.mescola.model import Mescola
+from app.routes.configurazione.utils import get_config
 
 from app.database.acquisti.model import Acquisti
 from app.database.listone.model import Listone
@@ -18,6 +19,7 @@ router=APIRouter()
 
 @router.get('/public',response_model=str)
 async def push_update():
+    config=get_config()
     squadre=get_squadre()
     public=[]
     for s in squadre:
@@ -67,7 +69,8 @@ async def push_update():
                 estratti=estratti,
                 totali=totali,
                 rimanenti=rimanenti
-            )
+            ),
+            crediti_nascosti=config.nascondi_crediti
         ).json(exclude_none=False,exclude_defaults=False,exclude_unset=False)
     )
     return ""

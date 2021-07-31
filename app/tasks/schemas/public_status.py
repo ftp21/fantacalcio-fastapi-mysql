@@ -94,14 +94,14 @@ class Rose_public(BaseModel):
     id: int =0
     nome: str = 0
     composizione: Dict = {}
-    crediti_rimanenti: int = 0
-    crediti_spesi: int = 0
+    crediti_rimanenti: Optional[int]
+    crediti_spesi: Optional[int]
 
     @validator('crediti_rimanenti')
     def hide_rimanenti(cls, crediti_rimanenti):
         config=get_config()
         if config.nascondi_crediti == True:
-            return ""
+            return None
         else:
             return crediti_rimanenti
 
@@ -109,7 +109,7 @@ class Rose_public(BaseModel):
     def hide_spesi(cls, crediti_spesi):
         config = get_config()
         if config.nascondi_crediti == True:
-            return ""
+            return None
         else:
             return crediti_spesi
 
@@ -118,7 +118,7 @@ class Public_state(BaseModel):
     ultimo_acquisto: Acquisto_public
     rose: List[Rose_public]
     info: Info
-
+    crediti_nascosti: bool
     @validator("*", pre=True)
     def not_none(cls, v, field):
         if v is None:
