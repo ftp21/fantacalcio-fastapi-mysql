@@ -26,11 +26,21 @@ def import_stemmi():
     for img in soup.find('header').findAll('img', {'height': "48"}):
         squadra=img.get('title').capitalize()+".png"
         img_url="https://www.legaseriea.it"+img.get('src')
-        output = 'stemmi/' + squadra
-        if not os.path.exists(output):
-            r = requests.get(img_url, allow_redirects=True)
-            open(output, 'wb').write(r.content)
-            typer.echo("Download {}".format(squadra))
+        # Fix hellas verona
+        name = squadra.split(' ')
+        try:
+            squadra=name[1].capitalize()
+            output = 'stemmi/' + squadra
+            if not os.path.exists(output):
+                r = requests.get(img_url, allow_redirects=True)
+                open(output, 'wb').write(r.content)
+                typer.echo("Download {}".format(squadra))
+        except IndexError:
+            output = 'stemmi/' + squadra
+            if not os.path.exists(output):
+                r = requests.get(img_url, allow_redirects=True)
+                open(output, 'wb').write(r.content)
+                typer.echo("Download {}".format(squadra))
 
 
 
