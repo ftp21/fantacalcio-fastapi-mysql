@@ -45,7 +45,7 @@ def get_rosa(id_squadra) -> Rosa:
 
 def _get_rosa_ruolo(ruolo,id_squadra):
     config = get_config()
-    if config.raggruppa_portieri == 1:
+    if config.raggruppa_portieri == 1 and ruolo == 'P':
         return db.session.query(Squadre.id.label('id_fanta_squadra'),
                                   Squadre.nome.label('fanta_squadra'),
                                   Listone.id.label('id_giocatore'),
