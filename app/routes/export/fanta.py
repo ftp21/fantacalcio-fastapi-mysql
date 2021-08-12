@@ -11,7 +11,7 @@ async def export_fanta():
     squadre=get_squadre()
     file=open('tmp/export.csv','w')
     for squadra in squadre:
-        rosa=get_rosa(squadra.id)
+        rosa=get_rosa(squadra.id,1)
         file.write("$,$,$\n")
         for portieri in rosa.portieri:
             file.write("{},{},{}\n".format(squadra.nome,portieri.id_giocatore,portieri.crediti))
