@@ -1,15 +1,20 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from app.routes.listone.views import listone
+import xlsxwriter
+
 router = APIRouter(tags=['Export Listone'])
 
 @router.get('/listone')
 def export_listone():
     lista=listone()
-    csv_listone = open("tmp/Listone.csv", 'w')
-    csv_listone.write("ID;Nome;Squadra;Ruolo\n")
+    workbook = xlsxwriter.Workbook('tmp/Listone.xlsx')
+    worksheet = workbook.add_worksheet()
+    worksheet.write_row(0,0,['ID','Nome','Squadra','Ruolo'],workbook.add_format({'bold': True}))
+    row=1
+    worksheet.autofilter('A1:D{}'.format(len(lista)+1))
     for giocatore in lista:
-        row="{};{};{};{}\n".format(str(giocatore.id).rstrip(),str(giocatore.nome_giocatore).rstrip(),str(giocatore.squadra).rstrip(),str(giocatore.ruolo).rstrip())
-        csv_listone.write(row)
-    csv_listone.close()
-    return FileResponse('tmp/Listone.csv',filename="Listone.csv")
+        worksheet.write_row(row,0,[str(giocatore.id).rstrip(),str(giocatore.nome_giocatore).rstrip(),str(giocatore.squadra).rstrip(),str(giocatore.ruolo).rstrip()])
+        row+=1
+    workbook.close()
+    return FileResponse('tmp/Listone.xlsx', filename="Listone.xlsx")

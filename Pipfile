@@ -23,6 +23,7 @@ fastapi-plugins = "*"
 fastapi-socketio = "*"
 beautifulsoup4 = "*"
 pyyaml = "*"
+xlsxwriter = "*"
 
 [dev-packages]
 
