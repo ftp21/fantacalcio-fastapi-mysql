@@ -46,6 +46,28 @@ def get_rosa(id_squadra,export=0) -> Rosa:
 def _get_rosa_ruolo(ruolo,id_squadra,export=0):
     config = get_config()
     if config.raggruppa_portieri == 1 and ruolo == 'P' and export == 0:
+        all=db.session.query(Squadre.id.label('id_fanta_squadra'),
+                                  Squadre.nome.label('fanta_squadra'),
+                                  Listone.id.label('id_giocatore'),
+                                  Listone.nome_giocatore,
+                                  Listone.squadra,
+                                  Listone.ruolo,
+                                  Listone.campioncino,
+                                  Acquisti.crediti,
+                                    Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Acquisti.id_squadra==id_squadra,Listone.ruolo==ruolo).all()
+
+        portieri={}
+        for p in all:
+            try:
+                if p.crediti > portieri[p.squadra]['id']:
+                    portieri[p.squadra]={ 'crediti':p.crediti,'id': p.id_giocatore}
+            except Exception as e:
+                portieri[p.squadra]={ 'crediti':p.crediti,'id': p.id_giocatore}
+
+        po=[]
+        for p in portieri.keys():
+            po.append(portieri[p]['id'])
+
         return db.session.query(Squadre.id.label('id_fanta_squadra'),
                                   Squadre.nome.label('fanta_squadra'),
                                   Listone.id.label('id_giocatore'),
@@ -54,7 +76,9 @@ def _get_rosa_ruolo(ruolo,id_squadra,export=0):
                                   Listone.ruolo,
                                   Listone.campioncino,
                                   Acquisti.crediti,
-                                    Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Acquisti.id_squadra==id_squadra,Listone.ruolo==ruolo).group_by(Listone.squadra).all()
+                                    Acquisti).join(Listone,Listone.id==Acquisti.id_giocatore).join(Squadre,Squadre.id==Acquisti.id_squadra).where(Listone.id.in_(po)).all()
+
+
 
     else:
 

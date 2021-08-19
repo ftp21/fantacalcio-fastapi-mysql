@@ -9,3 +9,7 @@ router = APIRouter(tags=['Visualizzazione Rosa'])
 def rosa(id_squadra) :
     if db.session.query(Squadre).get(id_squadra):
         return get_rosa(id_squadra)
+@router.get('/personal/{otp}',response_model=Rosa,name="Rosa by OTP")
+def rosa_by_otp(otp):
+    squadra=db.session.query(Squadre).where(Squadre.code==otp).one()
+    return get_rosa(squadra.id)
