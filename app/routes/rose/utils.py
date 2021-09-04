@@ -10,6 +10,7 @@ from fastapi_sqlalchemy import db
 
 def get_rosa(id_squadra,export=0) -> Rosa:
     config=get_config()
+    squadra=db.session.query(Squadre).get(id_squadra)
     #SELECT * FROM fantacalcio.acquisti inner join fantacalcio.listone on listone.id=acquisti.id_giocatore inner join fantacalcio.squadre on acquisti.id_squadra=squadre.id where id_squadra=2;
     portieri=_get_rosa_ruolo('P',id_squadra,export)
     difensori = _get_rosa_ruolo('D',id_squadra,export)
@@ -33,6 +34,7 @@ def get_rosa(id_squadra,export=0) -> Rosa:
 
 
     return Rosa(
+        nome_squadra=squadra.nome,
         portieri=portieri,
         difensori=difensori,
         centrocampisti=centrocampisti,
