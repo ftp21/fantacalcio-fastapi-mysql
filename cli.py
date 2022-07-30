@@ -46,7 +46,6 @@ def import_stemmi():
 
 @app.command()
 def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Scarica i campioncini in locale")):
-    link_lista_campioncini = 'https://www.fantacalcio.it/servizi/lista.ashx'
     engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
     Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     session = Session()
@@ -55,10 +54,9 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         for i in glob.glob("./campioncini/*.jpg"):
             os.remove(i)
         typer.echo("Scarico i campioncini")
-    with requests.Session() as s:
-        download = s.get(link_lista_campioncini)
+    with open("tmp/listone.csv") as s:
 
-        decoded_content = download.content.decode('utf-8')
+        decoded_content = s.read()
 
         cr = csv.reader(decoded_content.splitlines(), delimiter=',')
         my_list = list(cr)
@@ -93,7 +91,8 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         session.bulk_save_objects(obj)
         session.commit()
     session.close()
-
+    #select count(ruolo),ruolo from listone group by ruolo
+    return session.execute('select count(ruolo),ruolo from listone group by ruolo').all(),len(my_list)
 
 @app.command()
 def create_db():
@@ -114,12 +113,12 @@ def start_fastapi():
     engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
     if not database_exists(engine.url):
         create_db()
-
-    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = Session()
-    if session.query(func.count(Listone.id)).scalar()==0:
-        import_listone(download_campioncini=0)
-    session.close()
+    if os.path.exists('tmp/listone.csv'):
+        Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        session = Session()
+        if session.query(func.count(Listone.id)).scalar()==0:
+            import_listone(download_campioncini=0)
+        session.close()
 
 
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
