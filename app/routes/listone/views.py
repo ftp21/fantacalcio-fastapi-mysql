@@ -5,7 +5,7 @@ from fastapi_sqlalchemy import db  # an object to provide global access to a dat
 from app.database.listone.model import Listone
 from app.routes.listone.schemas.default import Listone as ListoneSchema
 from typing import List
-from cli import import_listone
+from cli import import_listone,create_db,import_settings
 router = APIRouter(tags=['View Listone'])
 
 @router.get('/listone', response_model=List[ListoneSchema],name="Listone",)
@@ -18,6 +18,8 @@ def listone() :
 async def upload_listone(file: UploadFile = File(...)):
     '''Upload del listone'''
 
+    create_db()
+    import_settings()
     contents = await file.read()
     with open('tmp/listone.csv', 'wb') as f:
         f.write(contents)
