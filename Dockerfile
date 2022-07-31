@@ -1,4 +1,4 @@
-FROM python:3.9-slim as base
+FROM python:3.10-slim as base
 
 # Setup env
 ENV LANG C.UTF-8
@@ -12,7 +12,7 @@ FROM base AS python-deps
 # Install pipenv and compilation dependencies
 RUN pip install pipenv
 RUN apt-get update \
-        && apt-get install -y --no-install-recommends build-essential default-libmysqlclient-dev libmariadbclient-dev
+        && apt-get install -y --no-install-recommends build-essential default-libmysqlclient-dev libmariadb-dev
 
 
 # Install python dependencies in /.venv

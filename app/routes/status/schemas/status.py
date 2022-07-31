@@ -11,7 +11,7 @@ class Status(BaseModel):
     ultimo_acquisto: GiocatoreAcquistato or []
     estratto: Estratto
     info: Info
-
+    totale_listone: int
 
 
     class Config:

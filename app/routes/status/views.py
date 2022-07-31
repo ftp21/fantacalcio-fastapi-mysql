@@ -29,7 +29,7 @@ async def get_status(request: Request,background_tasks: BackgroundTasks) -> Stat
     estratti=db.session.query(Mescola).filter(Mescola.estratto==1).count()
     totali=db.session.query(Mescola).count()
     rimanenti=int(totali)-int(estratti)
-
+    totale_listone=db.session.query(Listone).count()
     if estratto == None:
         estratto=Estratto(
             id=0,
@@ -46,5 +46,6 @@ async def get_status(request: Request,background_tasks: BackgroundTasks) -> Stat
             estratti=estratti,
             totali=totali,
             rimanenti=rimanenti
-        )
+        ),
+        totale_listone=totale_listone
     )
