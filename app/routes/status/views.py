@@ -35,7 +35,7 @@ async def get_status(request: Request,background_tasks: BackgroundTasks) -> Stat
             id=0,
             nome_giocatore="Inizia ad estrarre"
         )
-
+    db.session.commit()
     background_tasks.add_task(push_update)
     # requests.get(trigger)
     return StatusSchema(

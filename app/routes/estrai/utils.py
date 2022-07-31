@@ -53,7 +53,7 @@ def get_indietro() -> Estratto:
 
 
         elif len(estratto) == 1:
-            
+            db.session.commit()
             return Estratto(
                 id=estratto[0].giocatore.id,
                 nome_giocatore=estratto[0].giocatore.nome_giocatore,

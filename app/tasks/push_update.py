@@ -58,7 +58,7 @@ async def push_update():
     totali = db.session.query(Mescola).count()
     rimanenti = int(totali) - int(estratti)
 
-
+    db.session.commit()
 
     await app.manager.broadcast(
         Public_state(

@@ -29,7 +29,7 @@ def get_application() -> FastAPI:
 
 
 
-    app.add_middleware(DBSessionMiddleware, db_url=os.environ['CONNECTION_STRING'])
+    app.add_middleware(DBSessionMiddleware, db_url=os.environ['CONNECTION_STRING'],engine_args={'pool_size':0, 'max_overflow': -1},commit_on_exit=True)
     app.include_router(Routes)
     app.mount("/stemmi", StaticFiles(directory="stemmi"), name="stemmi")
     app.mount("/campioncini", StaticFiles(directory="campioncini"), name="campioncini")
