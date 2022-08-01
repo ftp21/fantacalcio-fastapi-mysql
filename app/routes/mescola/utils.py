@@ -45,18 +45,18 @@ def parse_and_scramble(parametri: Parametri):
     else:
         if parametri.alfabetico == False:
             random.shuffle(giocatori)
-    index = 0
     db.session.query(Mescola).delete()
+    db.session.execute('ALTER TABLE mescola AUTO_INCREMENT = 1;')
     db.session.commit()
-    for giocatore in giocatori:
-        index += 1
-        db.session.add(
+    ordinati=[]
+    for index,giocatore in enumerate(giocatori):
+        ordinati.append(
             Mescola(
                 id_giocatore=giocatore.id,
-                ordine=index
+                ordine=index+1
             )
         )
-
+    db.session.bulk_save_objects(ordinati)
     db.session.commit()
     primo=db.session.query(Mescola).filter(Mescola.ordine==1).one()
     primo.estratto=1

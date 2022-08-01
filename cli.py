@@ -124,38 +124,39 @@ def start_fastapi():
     uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
 @app.command('import-settings')
 def import_settings():
-    typer.echo("Importo le impostazioni dell'asta")
-    import yaml
-    engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
-    Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    session = Session()
+    if os.path.exists('import.yaml'):
+        typer.echo("Importo le impostazioni dell'asta")
+        import yaml
+        engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
+        Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        session = Session()
 
-    with open('import.yaml') as f:
-        impostazioni = yaml.safe_load(f)
-    from app.database.squadre.model import Squadre
-    session.query(Squadre).delete()
-    for squadra in impostazioni['squadre']:
-        session.add(
-            Squadre(
-                nome=squadra
+        with open('import.yaml') as f:
+            impostazioni = yaml.safe_load(f)
+        from app.database.squadre.model import Squadre
+        session.query(Squadre).delete()
+        for squadra in impostazioni['squadre']:
+            session.add(
+                Squadre(
+                    nome=squadra
+                )
             )
-        )
-        session.commit()
+            session.commit()
 
-    from app.database.configurazione.model import Configurazione
-    session.query(Configurazione).delete()
-    me = Configurazione(
-        id=1,
-        portieri=impostazioni['impostazioni']['portieri'],
-        difensori=impostazioni['impostazioni']['difensori'],
-        centrocampisti=impostazioni['impostazioni']['centrocampisti'],
-        attaccanti=impostazioni['impostazioni']['attaccanti'],
-        raggruppa_portieri=impostazioni['impostazioni']['raggruppa_portieri'],
-        crediti_totali=impostazioni['impostazioni']['crediti_totali'],
-        nascondi_crediti=impostazioni['impostazioni']['crediti_nascosti'],
-    )
-    session.add(me)
-    session.commit()
+        from app.database.configurazione.model import Configurazione
+        session.query(Configurazione).delete()
+        me = Configurazione(
+            id=1,
+            portieri=impostazioni['impostazioni']['portieri'],
+            difensori=impostazioni['impostazioni']['difensori'],
+            centrocampisti=impostazioni['impostazioni']['centrocampisti'],
+            attaccanti=impostazioni['impostazioni']['attaccanti'],
+            raggruppa_portieri=impostazioni['impostazioni']['raggruppa_portieri'],
+            crediti_totali=impostazioni['impostazioni']['crediti_totali'],
+            nascondi_crediti=impostazioni['impostazioni']['crediti_nascosti'],
+        )
+        session.add(me)
+        session.commit()
 
 
 if __name__ == "__main__":
