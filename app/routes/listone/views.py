@@ -5,7 +5,8 @@ from fastapi_sqlalchemy import db  # an object to provide global access to a dat
 from app.database.listone.model import Listone
 from app.routes.listone.schemas.default import Listone as ListoneSchema
 from typing import List
-from cli import import_listone,create_db,import_settings
+from cli import import_listone
+from fastapi_sqlalchemy import db
 router = APIRouter(tags=['View Listone'])
 
 @router.get('/listone', response_model=List[ListoneSchema],name="Listone",)
@@ -18,14 +19,25 @@ def listone() :
 async def upload_listone(file: UploadFile = File(...)):
     '''Upload del listone'''
 
-    create_db()
-    import_settings()
+    #
+    # delete
+    # from mescola;
+    # delete
+    # from listone;
+    # delete
+    # from acquisti;
+    db.session.execute("delete from mescola ;")
+    db.session.execute("delete from acquisti ;")
+    db.session.execute("delete from listone ;")
+
+    db.session.commit()
+    db.session.close()
     contents = await file.read()
     with open('tmp/listone.csv', 'wb') as f:
         f.write(contents)
     ruoli,total=import_listone(download_campioncini=0)
-    os.remove('tmp/listone.csv')
-    print(ruoli[0][1])
+    #os.remove('tmp/listone.csv')
+    f.close()
 
     return {
         "attaccanti" : ruoli[0][0],
