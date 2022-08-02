@@ -119,6 +119,7 @@ def start_fastapi():
         session = Session()
         if session.query(func.count(Listone.id)).scalar()==0:
             import_listone(download_campioncini=0)
+        import_settings()
         session.close()
 
 
