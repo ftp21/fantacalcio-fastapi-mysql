@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 
 from app.database import Base
 from app.database.listone.model import Listone
-
+from random import randint
 app = typer.Typer()
 import os
 load_dotenv()
