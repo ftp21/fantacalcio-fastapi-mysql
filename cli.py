@@ -140,7 +140,8 @@ def import_settings():
         for squadra in impostazioni['squadre']:
             session.add(
                 Squadre(
-                    nome=squadra
+                    nome=squadra,
+                    code=''.join(["{}".format(randint(0, 9)) for num in range(0, 5)])
                 )
             )
             session.commit()
