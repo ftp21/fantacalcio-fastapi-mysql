@@ -90,9 +90,9 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
                         campioncino=campioncino
                     ))
         if download_campioncini != 0:
-            typer.echo("Ho scaricato {} campioncini".format(len(my_list)))
+            typer.echo("Ho scaricato {} campioncini".format(len(obj)))
         else:
-            typer.echo("Ho importato {} campioncini".format(len(my_list)))
+            typer.echo("Ho importato {} campioncini".format(len(obj)))
         session.bulk_save_objects(obj)
         session.commit()
     session.close()

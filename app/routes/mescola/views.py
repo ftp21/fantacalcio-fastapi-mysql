@@ -1,6 +1,11 @@
 from fastapi import APIRouter,Form
 from .schemas.parametri import Parametri
 from .utils import parse_and_scramble,revese_mescola
+from fastapi.responses import FileResponse
+from app.database.mescola.model import Mescola
+from fastapi_sqlalchemy import db
+import xlsxwriter
+
 router = APIRouter(tags=['Gestione Mescola'])
 
 
@@ -26,3 +31,18 @@ def mescola(
 @router.get('/mescola', name="Mescola i giocatori del listone secondo i parametri dati",)
 def get_config_mescola() -> Parametri:
     return revese_mescola()
+
+@router.get("/mescolati")
+def get_mescolati():
+    mescola=db.session.execute("select ordine,nome_giocatore,ruolo,squadra from mescola inner join listone on id_giocatore=listone.id;")
+    worksheet = workbook.add_worksheet()
+    worksheet.write_row(0, 0, ['Ordine', 'Nome', 'Squadra', 'Ruolo'], workbook.add_format({'bold': True}))
+    row = 1
+    worksheet.autofilter('A1:D{}'.format(len(mescola) + 1))
+    for giocatore in mescola:
+        worksheet.write_row(row, 0, [str(giocatore.ordine).rstrip(), str(giocatore.nome_giocatore).rstrip(),
+                                     str(giocatore.squadra).rstrip(), str(giocatore.ruolo).rstrip()])
+        row += 1
+    workbook.close()
+    db.session.commit()
+    return FileResponse('tmp/Mescolati.xlsx', filename="Mescolati.xlsx")
