@@ -77,6 +77,10 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
                     progress.update(1)
                 else:
                     campioncino=row[15]
+
+
+                if row[10]=="0" and row[11]=="0":
+                    row[1]+="*"
                 obj.append(Listone(
                     id=row[0],
                     ruolo=row[3],
