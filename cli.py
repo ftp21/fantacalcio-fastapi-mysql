@@ -68,26 +68,27 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         # with typer.progressbar(range(len(my_list))) as progress:
         with typer.progressbar(length=len(my_list)) as progress:
             for row in my_list:
-                if download_campioncini !=0:
-                    campioncino='campioncini/'+os.path.basename(row[15])
-                    if not os.path.exists(campioncino):
-                        r = requests.get(row[15], allow_redirects=True)
-                        open(campioncino, 'wb').write(r.content)
-                        campioncino='/'+campioncino
-                    progress.update(1)
-                else:
-                    campioncino=row[15]
+                if row[10] != "0" and row[11] != "0":
+                    if download_campioncini !=0:
+                        campioncino='campioncini/'+os.path.basename(row[15])
+                        if not os.path.exists(campioncino):
+                            r = requests.get(row[15], allow_redirects=True)
+                            open(campioncino, 'wb').write(r.content)
+                            campioncino='/'+campioncino
+                        progress.update(1)
+                    else:
+                        campioncino=row[15]
 
 
-                if row[10]=="0" and row[11]=="0":
-                    row[1]+="*"
-                obj.append(Listone(
-                    id=row[0],
-                    ruolo=row[3],
-                    nome_giocatore=row[1],
-                    squadra=row[9],
-                    campioncino=campioncino
-                ))
+                    #if row[10]=="0" and row[11]=="0":
+                    #    row[1]+="*"
+                    obj.append(Listone(
+                        id=row[0],
+                        ruolo=row[3],
+                        nome_giocatore=row[1],
+                        squadra=row[9],
+                        campioncino=campioncino
+                    ))
         if download_campioncini != 0:
             typer.echo("Ho scaricato {} campioncini".format(len(my_list)))
         else:
