@@ -1,5 +1,5 @@
 import time
-
+import json
 import typer,requests,csv,os,glob,uvicorn
 from typing import Optional
 from dotenv import load_dotenv
@@ -23,24 +23,29 @@ def import_stemmi():
     download = requests.get(url)
     decoded_content = download.content.decode('utf-8')
     soup = BeautifulSoup(decoded_content,features="html.parser")
-    for img in soup.find('header').findAll('img', {'height': "48"}):
-        squadra=img.get('title').capitalize()+".png"
-        img_url="https://www.legaseriea.it"+img.get('src')
-        # Fix hellas verona
-        name = squadra.split(' ')
-        try:
-            squadra=name[1].capitalize()
-            output = 'stemmi/' + squadra
-            if not os.path.exists(output):
-                r = requests.get(img_url, allow_redirects=True)
-                open(output, 'wb').write(r.content)
-                typer.echo("Download {}".format(squadra))
-        except IndexError:
-            output = 'stemmi/' + squadra
-            if not os.path.exists(output):
-                r = requests.get(img_url, allow_redirects=True)
-                open(output, 'wb').write(r.content)
-                typer.echo("Download {}".format(squadra))
+    for img in soup.find('script', {"id": "__NEXT_DATA__"}):
+        all=json.loads(img)
+        squadre=all['props']['pageProps']['page']['body'][0]['body']['menu'][0]['body']['items'][1]['body']['items']
+
+        for i in squadre:
+            squadra=i['body']['title'].capitalize()+".png"
+            img_url=i['body']['image']
+            # Fix hellas verona
+            name = squadra.split(' ')
+            try:
+                squadra=name[1].capitalize()
+                output = 'stemmi/' + squadra
+                if not os.path.exists(output):
+                    r = requests.get(img_url, allow_redirects=True)
+                    open(output, 'wb').write(r.content)
+                    typer.echo("Download {}".format(squadra))
+            except IndexError:
+                output = 'stemmi/' + squadra
+                if not os.path.exists(output):
+                    r = requests.get(img_url, allow_redirects=True)
+                    open(output, 'wb').write(r.content)
+                    typer.echo("Download {}".format(squadra))
+
 
 
 
