@@ -234,3 +234,5 @@ fabric.properties
 
 !/.env
 !/tmp/listone.csv
+stemmi/[A-Z]*
+Pipfile.lock
