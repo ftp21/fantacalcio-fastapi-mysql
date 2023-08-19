@@ -1,5 +1,6 @@
 from app.routes.rose.utils import get_rosa
 from app.routes.configurazione.utils import get_config
+
 from sqlalchemy.orm.exc import NoResultFound
 
 from fastapi_sqlalchemy import db
@@ -9,6 +10,15 @@ def can_i_buy(id_squadra,crediti,id_giocatore):
     giocatore_da_acquistare=db.session.query(Listone).get(id_giocatore)
     config=get_config()
     rosa=get_rosa(id_squadra)
+
+    giocatori_comprati = rosa.portieri+rosa.difensori+rosa.centrocampisti+rosa.attaccanti
+    giocatori_totali = config.portieri+config.difensori+config.centrocampisti+config.attaccanti
+    giocatori_rimanenti = giocatori_totali-giocatori_comprati
+    offerta_massima =  rosa.crediti_rimanenti - (giocatori_rimanenti * config.offerta_minima)
+
+    if  crediti > offerta_massima: 
+        return "Non avresti crediti per acquistare tutti i giocatori"
+
     if giocatore_da_acquistare.ruolo == 'A':
         if rosa.composizione['attaccanti'] >= config.attaccanti:
             return "E' stato raggiunto il limite massimo di attaccanti"
