@@ -73,7 +73,8 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         # with typer.progressbar(range(len(my_list))) as progress:
         with typer.progressbar(length=len(my_list)) as progress:
             for row in my_list:
-                if row[10] != "0" and row[11] != "0":
+                #row[16] == 1 allora il giocatore è andato via
+                if row[16] == "0" :
                     if download_campioncini !=0:
                         campioncino='campioncini/'+os.path.basename(row[15])
                         if not os.path.exists(campioncino):
