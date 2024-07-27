@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fantacalcio
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  backend:
+    build: .
+    ports:
+      - "5555:5555"
+    depends_on:
+      wait-for-db:
+        condition: service_completed_successfully
+    volumes:
+      - .:/home/fastapi
+    environment:
+      DB_HOST: mariadb
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: fantacalcio
+
+
+  wait-for-db:
+    image: atkrad/wait4x
+    depends_on:
+      - mariadb
+    command: tcp mariadb:3306 -t 30s -i 250ms
+
+  frontend:
+    image: ghcr.io/ftp21/fantacalcio-front:latest
+    #image: frontend
+    ports: 
+      - "8888:80"
+    depends_on:
+      - backend

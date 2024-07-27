@@ -236,3 +236,7 @@ fabric.properties
 !/tmp/listone.csv
 stemmi/[A-Z]*
 Pipfile.lock
+
+.idea
+.vscode
+.github

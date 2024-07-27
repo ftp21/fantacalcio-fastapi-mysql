@@ -30,6 +30,7 @@ def import_stemmi():
         for i in squadre:
             squadra=i['body']['title'].capitalize()+".png"
             img_url=i['body']['image']
+            print(img_url)
             # Fix hellas verona
             name = squadra.split(' ')
             try:
@@ -59,8 +60,8 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         for i in glob.glob("./campioncini/*.jpg"):
             os.remove(i)
         typer.echo("Scarico i campioncini")
-    with open("tmp/listone.csv") as s:
 
+    with open("tmp/listone.csv",'rb') as s:
         decoded_content = s.read()
 
         cr = csv.reader(decoded_content.splitlines(), delimiter=',')

@@ -4,6 +4,8 @@ from app.database.squadre.model import Squadre
 from app.database.acquisti.model import Acquisti
 from .schemas.default import Squadre as SquadreSchema
 from typing import List
+from random import randint
+
 router = APIRouter(tags=["Gestione Squadre"])
 
 @router.get('/squadre')
@@ -16,7 +18,8 @@ def add_squadre(
     ) -> str:
     db.session.add(
         Squadre(
-            nome=nome
+            nome=nome,
+            code=''.join(["{}".format(randint(0, 9)) for num in range(0, 5)])
         )
     )
     db.session.commit()

@@ -1,6 +1,6 @@
 import os
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, UploadFile,HTTPException
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 from app.database.listone.model import Listone
 from app.routes.listone.schemas.default import Listone as ListoneSchema
@@ -26,23 +26,29 @@ async def upload_listone(file: UploadFile = File(...)):
     # from listone;
     # delete
     # from acquisti;
-    db.session.execute("delete from mescola ;")
-    db.session.execute("delete from acquisti ;")
-    db.session.execute("delete from listone ;")
+    if file.content_type == "text/csv":
+        db.session.execute("delete from mescola ;")
+        db.session.execute("delete from acquisti ;")
+        db.session.execute("delete from listone ;")
 
-    db.session.commit()
-    db.session.close()
-    contents = await file.read()
-    with open('tmp/listone.csv', 'wb') as f:
-        f.write(contents)
-    ruoli,total=import_listone(download_campioncini=0)
-    #os.remove('tmp/listone.csv')
-    f.close()
-
-    return {
-        "attaccanti" : ruoli[0][0],
-        "centrocampisti" : ruoli[1][0],
-        "difensori": ruoli[2][0],
-        "portieri": ruoli[3][0],
-        "totale": total
-    }
+        db.session.commit()
+        db.session.close()
+        contents = await file.read()
+        with open('tmp/listone.csv', 'wb') as f:
+            f.write(contents)
+        ruoli,total=import_listone(download_campioncini=0)
+        os.remove('tmp/listone.csv')
+        f.close()
+        if len(ruolo)==4:
+            return {
+                "attaccanti" : ruoli[0][0],
+                "centrocampisti" : ruoli[1][0],
+                "difensori": ruoli[2][0],
+                "portieri": ruoli[3][0],
+                "totale": total
+            }
+        else:
+            return HTTPException(status_code=400, detail="Invalid file format")
+    else:
+        os.remove('tmp/listone.csv')
+        return HTTPException(status_code=400, detail="File type not supported")

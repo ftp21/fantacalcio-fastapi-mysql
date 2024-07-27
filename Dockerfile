@@ -22,13 +22,15 @@ RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
 
 
 FROM base AS runtime
-
+COPY wait-for-it.sh /
 # Copy virtual env from python-deps stage
 COPY --from=python-deps /.venv /.venv
 RUN apt-get update \
-        && apt-get install -y --no-install-recommends default-libmysqlclient-dev  \
+        && apt-get install -y --no-install-recommends default-libmysqlclient-dev \
+        unzip curl procps  \
         && apt-get clean \
-        && apt-get autoremove -y
+        && apt-get autoremove -y \
+        && chmod +x /wait-for-it.sh
 
 ENV PATH="/.venv/bin:$PATH"
 
