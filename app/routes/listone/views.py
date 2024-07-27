@@ -39,7 +39,7 @@ async def upload_listone(file: UploadFile = File(...)):
         ruoli,total=import_listone(download_campioncini=0)
         os.remove('tmp/listone.csv')
         f.close()
-        if len(ruolo)==4:
+        if len(ruoli)==4:
             return {
                 "attaccanti" : ruoli[0][0],
                 "centrocampisti" : ruoli[1][0],
