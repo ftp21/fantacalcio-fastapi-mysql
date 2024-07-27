@@ -1,0 +1,14 @@
+{
+    "name": "Api fantacalcio",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "api",
+    "workspaceFolder": "/home/fastapi",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python"
+    ],
+    //"postCreateCommand": "pip install -r requirements.txt",
+    "remoteUser": "fastapi"
+}
