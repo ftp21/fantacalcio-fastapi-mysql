@@ -48,7 +48,7 @@ async def upload_listone(file: UploadFile = File(...)):
                 "totale": total
             }
         else:
-            return HTTPException(status_code=400, detail="Invalid file format")
+            raise HTTPException(status_code=400, detail="Invalid file format")
     else:
         os.remove('tmp/listone.csv')
-        return HTTPException(status_code=400, detail="File type not supported")
+        raise HTTPException(status_code=400, detail="File type not supported")
