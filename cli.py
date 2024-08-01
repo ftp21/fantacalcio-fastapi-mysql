@@ -62,8 +62,11 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         typer.echo("Scarico i campioncini")
 
     with open("tmp/listone.csv",'r') as s:
-        decoded_content = s.read()[3:]
-
+        decoded_content = s.read()
+        #il file scaricato dal sito contiene caratteri non definiti all'inizio
+        if not decoded_content[0].isdigit():
+            decoded_content=decoded_content[3:]
+        
         cr = csv.reader(decoded_content.splitlines(), delimiter=',')
         my_list = list(cr)
         session.execute('''DELETE FROM listone''')
