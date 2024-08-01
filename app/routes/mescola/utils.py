@@ -39,9 +39,9 @@ def parse_and_scramble(parametri: Parametri):
     else:
         giocatori = db.session.query(Listone).filter(Listone.ruolo.in_(clausole),~Listone.id.in_(acquistati)).all()
     if len(portieri_raggruppati) > 0:
+        giocatori = portieri_raggruppati + giocatori
         if parametri.alfabetico == False:
             random.shuffle(giocatori)
-        giocatori = portieri_raggruppati + giocatori
     else:
         if parametri.alfabetico == False:
             random.shuffle(giocatori)
