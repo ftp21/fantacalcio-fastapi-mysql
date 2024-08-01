@@ -61,8 +61,8 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
             os.remove(i)
         typer.echo("Scarico i campioncini")
 
-    with open("tmp/listone.csv",'rb') as s:
-        decoded_content = s.read()
+    with open("tmp/listone.csv",'r') as s:
+        decoded_content = s.read()[3:]
 
         cr = csv.reader(decoded_content.splitlines(), delimiter=',')
         my_list = list(cr)

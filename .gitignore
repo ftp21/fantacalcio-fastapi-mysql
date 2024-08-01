@@ -240,3 +240,4 @@ Pipfile.lock
 .idea
 .vscode
 .github
+private
