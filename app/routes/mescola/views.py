@@ -4,6 +4,7 @@ from .utils import parse_and_scramble,revese_mescola
 from fastapi.responses import FileResponse
 from fastapi_sqlalchemy import db
 import xlsxwriter
+from sqlalchemy.sql import text
 
 router = APIRouter(tags=['Gestione Mescola'])
 
@@ -33,7 +34,7 @@ def get_config_mescola() -> Parametri:
 
 @router.get("/mescolati")
 def get_mescolati():
-    mescola=db.session.execute("select ordine,nome_giocatore,ruolo,squadra from mescola inner join listone on id_giocatore=listone.id;")
+    mescola=db.session.execute(text("select ordine,nome_giocatore,ruolo,squadra from mescola inner join listone on id_giocatore=listone.id;"))
     workbook = xlsxwriter.Workbook('tmp/Mescolati.xlsx')
     worksheet = workbook.add_worksheet()
     worksheet.write_row(0, 0, ['Ordine', 'Nome', 'Squadra', 'Ruolo'], workbook.add_format({'bold': True}))

@@ -7,4 +7,4 @@ class Svincolati(BaseModel):
     centrocampisti: List[Listone]
     attaccanti: List[Listone]
     class Config:
-        orm_mode = True
+        from_attributes = True

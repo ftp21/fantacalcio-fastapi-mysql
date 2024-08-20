@@ -18,4 +18,4 @@ class Listone(BaseModel):
         if ruolo == 'A':
             return 'Attaccante'
     class Config:
-        orm_mode = True
+        from_attributes = True

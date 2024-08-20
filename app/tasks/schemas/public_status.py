@@ -1,4 +1,4 @@
-from pydantic import BaseModel,validator,root_validator
+from pydantic import BaseModel,field_validator,root_validator
 from app.routes.configurazione.utils import get_config
 from typing import List,Dict,Optional
 import os
@@ -17,7 +17,7 @@ class Estratto_public(BaseModel):
     ordine: int = ""
     campioncino: str = ""
 
-    @validator('campioncino')
+    @field_validator('campioncino')
     def raggruppamento(cls, value, values, **kwargs):
         config = get_config()
         if config.raggruppa_portieri == 1 and values['ruolo'] == 'Portiere':
@@ -33,7 +33,7 @@ class Estratto_public(BaseModel):
             values['campioncino'] = value
         return values['campioncino']
 
-    @validator('ruolo')
+    @field_validator('ruolo')
     def static_mage(cls, ruolo):
         if ruolo == 'P':
             return 'Portiere'
@@ -45,7 +45,7 @@ class Estratto_public(BaseModel):
             return 'Attaccante'
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 class Acquisto_public(BaseModel):
     id_fanta_squadra: int = ""
     fanta_squadra: str = ""
@@ -56,14 +56,14 @@ class Acquisto_public(BaseModel):
     ruolo: str = ""
     campioncino: str = ""
 
-    @validator('crediti')
+    @field_validator('crediti')
     def hide_rimanenti(cls, crediti_):
         config = get_config()
         if config.nascondi_crediti == True:
             return ""
         else:
             return crediti_
-    @validator('campioncino')
+    @field_validator('campioncino')
     def raggruppamento(cls, value, values, **kwargs):
         config = get_config()
         if config.raggruppa_portieri == 1 and values['ruolo'] == 'Portiere':
@@ -77,7 +77,7 @@ class Acquisto_public(BaseModel):
             values['campioncino'] = value
         return values['campioncino']
 
-    @validator('ruolo')
+    @field_validator('ruolo')
     def static_mage(cls, ruolo):
         if ruolo == 'P':
             return 'Portiere'
@@ -89,7 +89,7 @@ class Acquisto_public(BaseModel):
             return 'Attaccante'
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 class Rose_public(BaseModel):
     id: int =0
     nome: str = 0
@@ -97,7 +97,7 @@ class Rose_public(BaseModel):
     crediti_rimanenti: Optional[int]
     crediti_spesi: Optional[int]
 
-    @validator('crediti_rimanenti')
+    @field_validator('crediti_rimanenti')
     def hide_rimanenti(cls, crediti_rimanenti):
         config=get_config()
         if config.nascondi_crediti == True:
@@ -105,7 +105,7 @@ class Rose_public(BaseModel):
         else:
             return crediti_rimanenti
 
-    @validator('crediti_spesi')
+    @field_validator('crediti_spesi')
     def hide_spesi(cls, crediti_spesi):
         config = get_config()
         if config.nascondi_crediti == True:
@@ -119,7 +119,7 @@ class Public_state(BaseModel):
     rose: List[Rose_public]
     info: Info
     crediti_nascosti: bool
-    @validator("*", pre=True)
+    @field_validator("*", mode='before')
     def not_none(cls, v, field):
         if v is None:
             return ""

@@ -4,4 +4,4 @@ class Squadre(BaseModel):
     nome : str
     code: str
     class Config:
-        orm_mode = True
+        from_attributes = True

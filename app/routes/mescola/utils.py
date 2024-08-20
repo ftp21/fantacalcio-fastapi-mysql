@@ -5,6 +5,7 @@ from app.database.acquisti.model import Acquisti
 from app.routes.configurazione.utils import get_config
 from fastapi_sqlalchemy import db  # an object to provide global access to a database session
 import random
+from sqlalchemy.sql import text
 
 def parse_and_scramble(parametri: Parametri):
     clausole = []
@@ -46,7 +47,7 @@ def parse_and_scramble(parametri: Parametri):
         if parametri.alfabetico == False:
             random.shuffle(giocatori)
     db.session.query(Mescola).delete()
-    db.session.execute('ALTER TABLE mescola AUTO_INCREMENT = 1;')
+    db.session.execute(text('ALTER TABLE mescola AUTO_INCREMENT = 1;'))
     db.session.commit()
     ordinati=[]
     for index,giocatore in enumerate(giocatori):

@@ -1,8 +1,10 @@
 import time
 import json
 import typer,requests,csv,os,glob,uvicorn
+import MySQLdb
 from typing import Optional
 from dotenv import load_dotenv
+from sqlalchemy.sql import text
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -69,14 +71,14 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         
         cr = csv.reader(decoded_content.splitlines(), delimiter=',')
         my_list = list(cr)
-        session.execute('''DELETE FROM listone''')
+        session.execute(text('''DELETE FROM listone'''))
         session.commit()
         obj = []
         if download_campioncini !=0:
             typer.echo("Scarico {} campioncini".format(len(my_list)))
         # with typer.progressbar(range(len(my_list))) as progress:
-        with typer.progressbar(length=len(my_list)) as progress:
-            for row in my_list:
+        with typer.progressbar(my_list) as progress:
+            for row in progress:
                 #row[16] == 1 allora il giocatore è andato via
                 if row[16] == "0" :
                     if download_campioncini !=0:
@@ -107,7 +109,7 @@ def import_listone(download_campioncini: Optional[int] = typer.Option(0,help="Sc
         session.commit()
     session.close()
     #select count(ruolo),ruolo from listone group by ruolo
-    return session.execute('select count(ruolo),ruolo from listone group by ruolo').all(),len(my_list)
+    return session.execute(text('select count(ruolo),ruolo from listone group by ruolo')).all(),len(my_list)
 
 @app.command()
 def create_db():
@@ -127,18 +129,22 @@ def flush_campioncini():
 @app.command('run')
 def start_fastapi():
     engine = create_engine(os.environ['CONNECTION_STRING'], echo=False)
-    if not database_exists(engine.url):
-        create_db()
-    if os.path.exists('tmp/listone.csv'):
-        Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-        session = Session()
-        if session.query(func.count(Listone.id)).scalar()==0:
-            import_listone(download_campioncini=0)
-        session.close()
-    import_settings()
+    try:
+        if not database_exists(engine.url):
+            create_db()
+        if os.path.exists('tmp/listone.csv'):
+            Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+            session = Session()
+            if session.query(func.count(Listone.id)).scalar()==0:
+                import_listone(download_campioncini=0)
+            session.close()
+        import_settings()
+        uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True,  workers=5)
+    except OperationalError as e:
+        typer.echo(f"Impossibile collegarsi al db: {e}")
 
 
-    uvicorn.run("app:app", host='0.0.0.0', port=5555, reload=True, debug=True, workers=5)
+    
 @app.command('import-settings')
 def import_settings():
     if os.path.exists('import.yaml'):

@@ -13,5 +13,5 @@ class Configurazione(BaseModel):
     raggruppa_portieri : bool = False
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 

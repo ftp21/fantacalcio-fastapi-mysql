@@ -1,9 +1,12 @@
-[[source]]
-url = "https://pypi.org/simple"
-verify_ssl = true
-name = "pypi"
+[tool.poetry]
+name = "fantacalcio-fastapi-mysql"
+version = "0.1.0"
+description = ""
+authors = ["Valerio 'ftp21' Mancini <ftp21@ftp21.eu>"]
+readme = "README.md"
 
-[packages]
+[tool.poetry.dependencies]
+python = ">=3.10"
 fastapi = "*"
 typer = "*"
 uvicorn = "*"
@@ -25,7 +28,12 @@ beautifulsoup4 = "*"
 pyyaml = "*"
 xlsxwriter = "*"
 
-[dev-packages]
 
-[requires]
-python_version = "3.10"
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[virtualenvs]
+create = false

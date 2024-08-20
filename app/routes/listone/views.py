@@ -6,7 +6,7 @@ from app.database.listone.model import Listone
 from app.routes.listone.schemas.default import Listone as ListoneSchema
 from typing import List
 from cli import import_listone
-from fastapi_sqlalchemy import db
+from sqlalchemy.sql import text
 router = APIRouter(tags=['View Listone'])
 
 @router.get('/listone', response_model=List[ListoneSchema],name="Listone",)
@@ -27,9 +27,9 @@ async def upload_listone(file: UploadFile = File(...)):
     # delete
     # from acquisti;
     if file.content_type == "text/csv":
-        db.session.execute("delete from mescola ;")
-        db.session.execute("delete from acquisti ;")
-        db.session.execute("delete from listone ;")
+        db.session.execute(text("delete from mescola ;"))
+        db.session.execute(text("delete from acquisti ;"))
+        db.session.execute(text("delete from listone ;"))
 
         db.session.commit()
         db.session.close()
