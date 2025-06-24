@@ -11,4 +11,3 @@ class Configurazione(Base):
     crediti_totali = Column(Integer)
     nascondi_crediti = Column(Boolean)
     raggruppa_portieri = Column(Boolean)
-    offerta_minima = Column(Integer)

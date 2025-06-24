@@ -37,6 +37,6 @@ services:
     image: ghcr.io/ftp21/fantacalcio-front:latest
     #image: frontend
     ports: 
-      - "8888:80"
+      - "9999:80"
     depends_on:
       - backend

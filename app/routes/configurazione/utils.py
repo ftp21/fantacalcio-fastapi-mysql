@@ -16,6 +16,5 @@ def get_config() -> ConfigurazioneSchema:
             attaccanti=0,
             nascondi_crediti=False,
             raggruppa_portieri=False,
-            offerta_minima=0
         )
     return config
